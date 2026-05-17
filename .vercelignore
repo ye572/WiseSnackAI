@@ -1,0 +1,6 @@
+backend/
+.git/
+.gitignore
+REQUIREMENTS.md
+DESIGN.md
+SKILL.md
