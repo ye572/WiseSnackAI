@@ -219,7 +219,7 @@ const DEFAULT_SETTINGS = {
   showLowQuality: false, // 是否显示低质内容
   // AI 后端配置
   useRealAI: true,
-  serverUrl: 'http://wisesnackai-production.up.railway.app',
+  serverUrl: 'https://wisesnackai-production.up.railway.app',
 };
 
 function getSettings() {

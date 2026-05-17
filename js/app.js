@@ -27,7 +27,6 @@ function initSettings() {
   document.getElementById('threshold-value').textContent = settings.lowQualityThreshold;
   document.getElementById('setting-review-interval').value = settings.reviewInterval;
   document.getElementById('review-interval-value').textContent = settings.reviewInterval;
-  document.getElementById('setting-server-url').value = settings.serverUrl || 'http://localhost:8000';
 }
 
 // ==================== EVENT BINDINGS ====================
@@ -137,10 +136,6 @@ function bindEvents() {
   document.getElementById('setting-review-interval').addEventListener('input', function () {
     document.getElementById('review-interval-value').textContent = this.value;
     updateSettings({ reviewInterval: parseInt(this.value) });
-  });
-  document.getElementById('setting-server-url').addEventListener('blur', function () {
-    const url = this.value.trim();
-    if (url) updateSettings({ serverUrl: url });
   });
   // ---- Data Management ----
   document.getElementById('btn-export-all-json').addEventListener('click', exportAllAsJSON);
