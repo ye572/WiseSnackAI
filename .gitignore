@@ -1,0 +1,21 @@
+# 环境变量（包含 API Key，绝对不能提交）
+.env
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+
+# 系统文件
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE
+.vscode/
+.idea/
+
+# Node（如果有的话）
+node_modules/
