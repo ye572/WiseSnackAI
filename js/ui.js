@@ -67,7 +67,7 @@ function renderCards(notes, append = false) {
 
 function createCardElement(note, index = 0) {
   const card = document.createElement('div');
-  card.className = 'note-card p-4 cursor-pointer relative group';
+  card.className = 'note-card p-4 sm:p-5 cursor-pointer relative group';
   card.dataset.noteId = note.id;
   card.style.animationDelay = (index % 12) * 0.05 + 's';
 
@@ -84,17 +84,17 @@ function createCardElement(note, index = 0) {
         ${escapeHtml(platform)}
       </span>
       <div class="flex items-center gap-0.5 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-200">
-        <button class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-warm-100 transition-colors ${note.isPinned ? 'text-honey-400' : 'text-warm-400'}" title="置顶" data-action="pin" data-id="${note.id}">
+        <button class="w-9 h-9 flex items-center justify-center rounded-full hover:bg-warm-100 active:bg-warm-200 transition-colors btn-press ${note.isPinned ? 'text-honey-400' : 'text-warm-400'}" title="置顶" data-action="pin" data-id="${note.id}">
           <svg class="w-4 h-4" fill="${note.isPinned ? 'currentColor' : 'none'}" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/>
           </svg>
         </button>
-        <button class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-warm-100 transition-colors ${note.isFavorited ? 'text-honey-400' : 'text-warm-400'}" title="收藏" data-action="fav" data-id="${note.id}">
+        <button class="w-9 h-9 flex items-center justify-center rounded-full hover:bg-warm-100 active:bg-warm-200 transition-colors btn-press ${note.isFavorited ? 'text-honey-400' : 'text-warm-400'}" title="收藏" data-action="fav" data-id="${note.id}">
           <svg class="w-4 h-4" fill="${note.isFavorited ? 'currentColor' : 'none'}" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
           </svg>
         </button>
-        <button class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-red-50 text-warm-400 hover:text-red-500 transition-colors" title="删除" data-action="delete" data-id="${note.id}">
+        <button class="w-9 h-9 flex items-center justify-center rounded-full hover:bg-red-50 active:bg-red-100 text-warm-400 hover:text-red-500 transition-colors btn-press" title="删除" data-action="delete" data-id="${note.id}">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
           </svg>
@@ -182,7 +182,7 @@ function openNoteDetail(id) {
   document.getElementById('modal-knowledge').innerHTML = formatStructuredText(note.sections.knowledge || '（暂无）');
   // 个人感悟区始终为可编辑的 textarea
   const reflectionText = note.sections.reflection || '';
-  document.getElementById('modal-reflection').innerHTML = `<textarea class="w-full min-h-[120px] p-3 text-sm border-2 border-blue-200 rounded-lg outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 resize-y bg-white font-noto leading-relaxed transition-colors" placeholder="在此记录你的个人感悟…">${escapeHtml(reflectionText)}</textarea>`;
+  document.getElementById('modal-reflection').innerHTML = `<textarea class="w-full min-h-[120px] p-3 sm:p-4 text-sm sm:text-base border-2 border-blue-200 rounded-xl outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 resize-y bg-white font-noto leading-relaxed transition-colors" placeholder="在此记录你的个人感悟…">${escapeHtml(reflectionText)}</textarea>`;
   const reflectionTextarea = document.querySelector('#modal-reflection textarea');
   if (reflectionTextarea) {
     reflectionTextarea.addEventListener('blur', () => {
@@ -225,7 +225,7 @@ function editNote() {
   ['modal-core-points', 'modal-knowledge'].forEach(id => {
     const el = document.getElementById(id);
     const text = el.textContent;
-    el.innerHTML = `<textarea class="w-full min-h-[80px] p-3 text-sm border border-warm-200 rounded-lg outline-none focus:border-honey-400 resize-y">${escapeHtml(text)}</textarea>`;
+    el.innerHTML = `<textarea class="w-full min-h-[80px] p-3 sm:p-4 text-sm sm:text-base border border-warm-200 rounded-xl outline-none focus:border-honey-400 focus:ring-2 focus:ring-honey-100 resize-y">${escapeHtml(text)}</textarea>`;
   });
   const refTextarea = document.querySelector('#modal-reflection textarea');
   if (refTextarea) refTextarea.focus();
@@ -254,7 +254,7 @@ function saveNoteEdit() {
   document.getElementById('modal-core-points').textContent = corePoints;
   document.getElementById('modal-knowledge').textContent = knowledge;
   // 感悟区恢复为 textarea
-  document.getElementById('modal-reflection').innerHTML = `<textarea class="w-full min-h-[120px] p-3 text-sm border-2 border-blue-200 rounded-lg outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 resize-y bg-white font-noto leading-relaxed transition-colors" placeholder="在此记录你的个人感悟…">${escapeHtml(reflection)}</textarea>`;
+  document.getElementById('modal-reflection').innerHTML = `<textarea class="w-full min-h-[120px] p-3 sm:p-4 text-sm sm:text-base border-2 border-blue-200 rounded-xl outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 resize-y bg-white font-noto leading-relaxed transition-colors" placeholder="在此记录你的个人感悟…">${escapeHtml(reflection)}</textarea>`;
   const refTextarea = document.querySelector('#modal-reflection textarea');
   if (refTextarea) {
     refTextarea.addEventListener('blur', () => {

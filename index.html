@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
   <title>WiseSnack · 干货捞捞 — AI 知识整理工具</title>
 
   <!-- Google Fonts: Caveat (hero), Fredoka (headings), Nunito (body), ZCOOL KuaiLe (Chinese decorative) -->
@@ -60,6 +60,8 @@
           },
           boxShadow: {
             'card': 'rgba(0,0,0,0.03) 0 0 0 1px, rgba(0,0,0,0.04) 0 2px 6px, rgba(0,0,0,0.06) 0 4px 8px',
+            'soft': '0 1px 3px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.03)',
+            'hover': '0 4px 16px rgba(61,50,38,0.06), 0 1px 0 rgba(0,0,0,0.04)',
           },
           maxWidth: {
             'content': '1280px',
@@ -70,6 +72,27 @@
   </script>
 
   <style>
+    /* ========== SAFE AREA & GLOBAL FIXES ========== */
+    :root {
+      --safe-top: env(safe-area-inset-top, 0px);
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
+      --safe-left: env(safe-area-inset-left, 0px);
+      --safe-right: env(safe-area-inset-right, 0px);
+    }
+    html, body {
+      overflow-x: hidden;
+      -webkit-overflow-scrolling: touch;
+      touch-action: manipulation;
+    }
+    .pt-safe { padding-top: var(--safe-top); }
+    .pb-safe { padding-bottom: var(--safe-bottom); }
+    .pl-safe { padding-left: var(--safe-left); }
+    .pr-safe { padding-right: var(--safe-right); }
+    .top-safe { top: var(--safe-top); }
+    .bottom-safe { bottom: var(--safe-bottom); }
+    .min-h-touch { min-height: 48px; }
+    .min-w-touch { min-width: 48px; }
+
     /* ========== PAPER TEXTURE ========== */
     body::before {
       content: '';
@@ -143,6 +166,7 @@
       background: #fffdf9;
       border: 1px solid rgba(0,0,0,0.05);
       border-radius: 4px 18px 18px 18px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03), 0 2px 8px rgba(0,0,0,0.02);
       transition: transform 0.2s ease, border-color 0.3s ease, box-shadow 0.3s ease;
     }
     .note-card::before {
@@ -225,13 +249,59 @@
     .pulse-dot {
       animation: pulse 2s ease-in-out infinite;
     }
+
+    /* ========== BUTTON PRESS EFFECT ========== */
+    .btn-press {
+      transition: transform 0.1s ease, box-shadow 0.1s ease, opacity 0.1s ease;
+    }
+    .btn-press:active {
+      transform: scale(0.96);
+      opacity: 0.85;
+    }
+
+    /* ========== ENHANCED LOADING ========== */
+    @keyframes shimmer {
+      0% { background-position: -200% 0; }
+      100% { background-position: 200% 0; }
+    }
+    .shimmer-text {
+      background: linear-gradient(90deg, transparent 25%, rgba(232,168,96,0.15) 50%, transparent 75%);
+      background-size: 200% 100%;
+      animation: shimmer 2s ease-in-out infinite;
+      border-radius: 4px;
+    }
+    @keyframes dotPulse {
+      0%, 20% { opacity: 0; transform: scale(0.8); }
+      50% { opacity: 1; transform: scale(1); }
+      80%, 100% { opacity: 0; transform: scale(0.8); }
+    }
+    .loading-dot {
+      animation: dotPulse 1.4s ease-in-out infinite both;
+    }
+    .loading-dot:nth-child(2) { animation-delay: 0.2s; }
+    .loading-dot:nth-child(3) { animation-delay: 0.4s; }
+
+    /* ========== CONTENT TYPOGRAPHY ENHANCEMENT ========== */
+    .content-prose {
+      font-size: 0.938rem;
+      line-height: 1.75;
+      letter-spacing: 0.01em;
+      word-break: break-word;
+      overflow-wrap: break-word;
+    }
+    @media (max-width: 640px) {
+      .content-prose {
+        font-size: 0.875rem;
+        line-height: 1.7;
+      }
+    }
   </style>
 </head>
 <body class="bg-warm-50 text-warm-800 font-noto antialiased">
 
   <!-- ==================== TOP NAVIGATION ==================== -->
-  <nav class="sticky top-0 z-30 bg-white border-b border-warm-200 h-14 sm:h-16">
-    <div class="max-w-content mx-auto px-4 sm:px-8 h-full flex items-center justify-between">
+  <nav class="sticky top-0 z-30 bg-white border-b border-warm-200" style="padding-top: var(--safe-top);">
+    <div class="max-w-content mx-auto px-4 sm:px-8 flex items-center justify-between" style="min-height: 3.5rem;">
       <!-- Minimal logo mark -->
       <a href="#" class="flex items-center gap-2 group" title="WiseSnack">
         <div class="w-3.5 h-3.5 bg-honey-300 rounded-full flex-shrink-0 group-hover:scale-125 transition-transform"></div>
@@ -240,13 +310,13 @@
 
       <!-- Desktop Nav Actions -->
       <div class="hidden sm:flex items-center gap-3">
-        <button id="btn-categories" class="px-4 py-2 text-sm font-fredoka font-medium text-warm-600 hover:text-warm-800 hover:bg-warm-200 rounded-lg transition-colors">
+        <button id="btn-categories" class="px-4 py-2 min-h-[44px] text-sm font-fredoka font-medium text-warm-600 hover:text-warm-800 hover:bg-warm-200 active:bg-warm-300 rounded-lg transition-colors btn-press">
           <svg class="w-4 h-4 inline-block mr-1.5 -mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/>
           </svg>
           分类管理
         </button>
-        <button id="btn-settings" class="w-9 h-9 flex items-center justify-center text-warm-500 hover:text-warm-800 hover:bg-warm-200 rounded-full transition-colors" title="设置">
+        <button id="btn-settings" class="w-9 h-9 min-w-[44px] min-h-[44px] flex items-center justify-center text-warm-500 hover:text-warm-800 hover:bg-warm-200 active:bg-warm-300 rounded-full transition-colors btn-press" title="设置">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
@@ -255,7 +325,7 @@
       </div>
 
       <!-- Mobile Hamburger -->
-      <button id="btn-hamburger" class="sm:hidden w-10 h-10 flex items-center justify-center text-warm-600 hover:bg-warm-200 rounded-lg transition-colors">
+      <button id="btn-hamburger" class="sm:hidden w-10 h-10 min-w-[44px] min-h-[44px] flex items-center justify-center text-warm-600 hover:bg-warm-200 active:bg-warm-300 rounded-lg transition-colors btn-press">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
         </svg>
@@ -264,13 +334,13 @@
 
     <!-- Mobile Menu Dropdown -->
     <div id="mobile-menu" class="sm:hidden hidden bg-white border-b border-warm-200 px-4 py-3 space-y-1">
-      <button id="btn-categories-mobile" class="w-full text-left px-4 py-3 text-sm font-medium text-warm-600 hover:bg-warm-100 rounded-lg flex items-center gap-2 font-noto">
+      <button id="btn-categories-mobile" class="w-full text-left px-4 py-3 min-h-[48px] text-sm font-medium text-warm-600 hover:bg-warm-100 active:bg-warm-200 rounded-lg flex items-center gap-2 font-noto btn-press">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/>
         </svg>
         分类管理
       </button>
-      <button id="btn-settings-mobile" class="w-full text-left px-4 py-3 text-sm font-medium text-warm-600 hover:bg-warm-100 rounded-lg flex items-center gap-2 font-noto">
+      <button id="btn-settings-mobile" class="w-full text-left px-4 py-3 min-h-[48px] text-sm font-medium text-warm-600 hover:bg-warm-100 active:bg-warm-200 rounded-lg flex items-center gap-2 font-noto btn-press">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
@@ -315,7 +385,7 @@
     <section class="bg-white border border-warm-200 rounded-xl sm:rounded-2xl p-4 sm:p-6 mb-4 sm:mb-8">
       <!-- Input Tabs -->
       <div class="flex gap-2 mb-5">
-        <button class="input-tab tab-active px-4 py-2.5 text-sm font-fredoka font-medium rounded-full transition-all" data-tab="link">
+        <button class="input-tab tab-active px-4 py-2.5 min-h-[44px] text-sm font-fredoka font-medium rounded-full transition-all" data-tab="link">
           <svg class="w-4 h-4 inline-block mr-1.5 -mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/>
           </svg>
@@ -327,14 +397,14 @@
       <div id="panel-link" class="input-panel">
         <div class="flex flex-col sm:flex-row gap-3">
           <div class="flex-1 relative">
-            <textarea id="input-link" rows="3" placeholder="粘贴短视频链接或小红书图文笔记链接，支持多行同时粘贴…" class="w-full px-4 py-3 text-sm font-noto text-warm-800 bg-warm-100 border border-warm-200 rounded-xl resize-none outline-none focus:border-honey-400 focus:ring-2 focus:ring-honey-100 transition-all placeholder:text-warm-400"></textarea>
+            <textarea id="input-link" rows="3" placeholder="粘贴短视频链接或小红书图文笔记链接，支持多行同时粘贴…" class="w-full px-4 py-3 min-h-[80px] text-sm font-noto text-warm-800 bg-warm-100 border border-warm-200 rounded-xl resize-none outline-none focus:border-honey-400 focus:ring-2 focus:ring-honey-100 transition-all placeholder:text-warm-400"></textarea>
             <button id="btn-clear-input" class="hidden absolute right-3 top-3 w-6 h-6 flex items-center justify-center text-warm-400 hover:text-warm-600 bg-warm-300 rounded-full transition-colors" title="清空">
               <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
               </svg>
             </button>
           </div>
-          <button id="btn-submit" class="w-full sm:w-auto sm:flex-shrink-0 px-6 py-3 bg-honey-400 hover:bg-honey-500 active:bg-honey-500 text-white text-sm font-medium rounded-xl transition-colors flex items-center justify-center gap-2">
+          <button id="btn-submit" class="w-full sm:w-auto sm:flex-shrink-0 px-6 py-3 min-h-[48px] bg-honey-400 hover:bg-honey-500 text-white text-sm font-medium rounded-xl btn-press flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
             </svg>
@@ -345,15 +415,21 @@
 
 
       <!-- AI Processing State -->
-      <div id="ai-processing" class="hidden mt-4 flex items-center gap-3 p-4 bg-honey-50 border border-honey-200 rounded-xl">
-        <div class="w-5 h-5 border-2 border-honey-400 border-t-transparent rounded-full animate-spin"></div>
-        <span class="text-sm font-noto text-honey-600">AI 正在处理中…</span>
-        <span id="ai-status-text" class="text-sm font-noto text-honey-500"></span>
+      <div id="ai-processing" class="hidden mt-4 p-4 bg-honey-50 border border-honey-200 rounded-xl">
+        <div class="flex items-center gap-3">
+          <div class="flex-shrink-0 flex items-center gap-1">
+            <span class="loading-dot w-2 h-2 bg-honey-400 rounded-full inline-block"></span>
+            <span class="loading-dot w-2 h-2 bg-honey-400 rounded-full inline-block"></span>
+            <span class="loading-dot w-2 h-2 bg-honey-400 rounded-full inline-block"></span>
+          </div>
+          <span class="text-sm font-noto text-honey-600 font-medium">AI 正在处理中</span>
+        </div>
+        <span id="ai-status-text" class="block mt-2 text-xs font-noto text-honey-500 pl-5"></span>
       </div>
     </section>
 
     <!-- ===== DASHBOARD ===== -->
-    <section class="grid grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4 mb-6 sm:mb-10">
+    <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4 mb-6 sm:mb-10">
       <!-- Today's Review — prominent card with warm honey gradient -->
       <div class="lg:col-span-2 relative overflow-hidden bg-gradient-to-br from-honey-50 via-honey-50/80 to-white border border-honey-200/60 rounded-2xl p-5 sm:p-6 transition-all duration-300 hover:shadow-md group cursor-pointer">
         <!-- Background decoration -->
@@ -371,7 +447,7 @@
               <p class="text-[10px] text-honey-400/70 font-noto mt-0.5">点击开始复习</p>
             </div>
           </div>
-          <span id="stat-review" class="text-4xl sm:text-5xl font-fredoka font-bold text-warm-800 tracking-tight">0</span>
+          <span id="stat-review" class="text-3xl sm:text-5xl font-fredoka font-bold text-warm-800 tracking-tight">0</span>
           <span class="text-base font-noto font-medium text-warm-400 ml-1.5">篇</span>
         </div>
       </div>
@@ -388,7 +464,7 @@
             </span>
             <span class="text-xs font-fredoka font-semibold text-warm-500 tracking-wider uppercase">总笔记</span>
           </div>
-          <span id="stat-total" class="text-3xl sm:text-4xl font-fredoka font-bold text-warm-800 tracking-tight">0</span>
+          <span id="stat-total" class="text-2xl sm:text-4xl font-fredoka font-bold text-warm-800 tracking-tight">0</span>
           <span class="text-sm font-noto font-medium text-warm-400 ml-1">篇</span>
         </div>
       </div>
@@ -405,7 +481,7 @@
             </span>
             <span class="text-xs font-fredoka font-semibold text-warm-500 tracking-wider uppercase">本月新增</span>
           </div>
-          <span id="stat-monthly" class="text-3xl sm:text-4xl font-fredoka font-bold text-warm-800 tracking-tight">0</span>
+          <span id="stat-monthly" class="text-2xl sm:text-4xl font-fredoka font-bold text-warm-800 tracking-tight">0</span>
           <span class="text-sm font-noto font-medium text-warm-400 ml-1">篇</span>
         </div>
       </div>
@@ -422,7 +498,7 @@
             </span>
             <span class="text-xs font-fredoka font-semibold text-warm-500 tracking-wider uppercase">平均质量</span>
           </div>
-          <span id="stat-avg-quality" class="text-3xl sm:text-4xl font-fredoka font-bold text-warm-800 tracking-tight">-</span>
+          <span id="stat-avg-quality" class="text-2xl sm:text-4xl font-fredoka font-bold text-warm-800 tracking-tight">-</span>
           <span class="text-sm font-noto font-medium text-warm-400 ml-1">星</span>
         </div>
       </div>
@@ -432,36 +508,36 @@
     <section class="bg-white/70 backdrop-blur-sm border border-warm-200/60 rounded-2xl p-3 sm:p-4 mb-4 sm:mb-6">
       <div class="flex flex-wrap items-center gap-2 sm:gap-3">
         <!-- Search -->
-        <div class="flex-1 min-w-[200px] relative">
+        <div class="flex-1 min-w-0 sm:min-w-[200px] relative">
           <svg class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-warm-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
           </svg>
-          <input id="search-input" type="text" placeholder="搜索笔记…" class="w-full pl-10 pr-4 py-2.5 text-sm font-noto bg-warm-100/80 border border-warm-200 rounded-xl outline-none focus:border-honey-400 focus:ring-2 focus:ring-honey-100/50 focus:bg-white transition-all placeholder:text-warm-400">
+          <input id="search-input" type="text" placeholder="搜索笔记…" class="w-full pl-10 pr-4 py-2.5 min-h-[44px] text-sm font-noto bg-warm-100/80 border border-warm-200 rounded-xl outline-none focus:border-honey-400 focus:ring-2 focus:ring-honey-100/50 focus:bg-white transition-all placeholder:text-warm-400">
         </div>
         <!-- Search Scope -->
-        <select id="search-scope" class="px-3.5 py-2.5 text-sm font-noto bg-warm-100/80 border border-warm-200 rounded-xl text-warm-600 outline-none focus:border-honey-400 focus:ring-2 focus:ring-honey-100/50 transition-all cursor-pointer hover:bg-warm-200/50">
+        <select id="search-scope" class="px-3.5 py-2.5 min-h-[44px] text-sm font-noto bg-warm-100/80 border border-warm-200 rounded-xl text-warm-600 outline-none focus:border-honey-400 focus:ring-2 focus:ring-honey-100/50 transition-all cursor-pointer hover:bg-warm-200/50">
           <option value="all">搜索全文</option>
           <option value="title">仅搜索标题</option>
         </select>
         <!-- Tag Filter -->
-        <select id="filter-tag" class="px-3.5 py-2.5 text-sm font-noto bg-warm-100/80 border border-warm-200 rounded-xl text-warm-600 outline-none focus:border-honey-400 focus:ring-2 focus:ring-honey-100/50 transition-all cursor-pointer hover:bg-warm-200/50">
+        <select id="filter-tag" class="px-3.5 py-2.5 min-h-[44px] text-sm font-noto bg-warm-100/80 border border-warm-200 rounded-xl text-warm-600 outline-none focus:border-honey-400 focus:ring-2 focus:ring-honey-100/50 transition-all cursor-pointer hover:bg-warm-200/50">
           <option value="all">全部标签</option>
         </select>
         <!-- Sort -->
-        <select id="sort-by" class="px-3.5 py-2.5 text-sm font-noto bg-warm-100/80 border border-warm-200 rounded-xl text-warm-600 outline-none focus:border-honey-400 focus:ring-2 focus:ring-honey-100/50 transition-all cursor-pointer hover:bg-warm-200/50">
+        <select id="sort-by" class="px-3.5 py-2.5 min-h-[44px] text-sm font-noto bg-warm-100/80 border border-warm-200 rounded-xl text-warm-600 outline-none focus:border-honey-400 focus:ring-2 focus:ring-honey-100/50 transition-all cursor-pointer hover:bg-warm-200/50">
           <option value="newest">最新</option>
           <option value="oldest">最早</option>
           <option value="quality">质量最高</option>
           <option value="views">浏览最多</option>
         </select>
         <!-- View toggle: low-quality hidden -->
-        <button id="btn-toggle-low-quality" class="flex-shrink-0 px-3 py-2.5 text-sm font-fredoka text-warm-500 hover:text-honey-500 hover:bg-honey-50/50 bg-warm-100/80 border border-warm-200 rounded-xl transition-all cursor-pointer" title="显示/隐藏低质内容">
+        <button id="btn-toggle-low-quality" class="flex-shrink-0 px-3 py-2.5 min-h-[44px] min-w-[44px] text-sm font-fredoka text-warm-500 hover:text-honey-500 hover:bg-honey-50/50 bg-warm-100/80 border border-warm-200 rounded-xl transition-all cursor-pointer btn-press flex items-center justify-center" title="显示/隐藏低质内容">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"/>
           </svg>
         </button>
         <!-- Batch management -->
-        <button id="btn-batch-mode" class="flex-shrink-0 px-3 py-2.5 text-sm font-fredoka text-warm-500 hover:text-honey-500 hover:bg-honey-50/50 bg-warm-100/80 border border-warm-200 rounded-xl transition-all cursor-pointer" title="批量管理">
+        <button id="btn-batch-mode" class="flex-shrink-0 px-3 py-2.5 min-h-[44px] min-w-[44px] text-sm font-fredoka text-warm-500 hover:text-honey-500 hover:bg-honey-50/50 bg-warm-100/80 border border-warm-200 rounded-xl transition-all cursor-pointer btn-press flex items-center justify-center" title="批量管理">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/>
           </svg>
@@ -492,7 +568,7 @@
 
     <!-- Load More -->
     <div id="load-more-container" class="text-center hidden">
-      <button id="btn-load-more" class="px-8 py-3 text-sm font-fredoka font-medium text-warm-600 bg-warm-200 hover:bg-warm-300 rounded-xl transition-colors">
+      <button id="btn-load-more" class="px-8 py-3 min-h-[48px] text-sm font-fredoka font-medium text-warm-600 bg-warm-200 hover:bg-warm-300 active:bg-warm-400 active:text-warm-800 rounded-xl btn-press transition-colors">
         加载更多
       </button>
     </div>
@@ -517,9 +593,9 @@
           </div>
         </div>
         <div class="flex items-center gap-2">
-          <button onclick="editNote()" class="px-3 py-1.5 text-sm font-noto text-warm-600 hover:bg-warm-200 rounded-lg transition-colors">编辑</button>
-          <button id="modal-btn-export" class="px-3 py-1.5 text-sm font-noto text-warm-600 hover:bg-warm-200 rounded-lg transition-colors">导出</button>
-          <button onclick="closeModal('modal-detail')" class="w-8 h-8 flex items-center justify-center text-warm-400 hover:text-warm-600 hover:bg-warm-200 rounded-full transition-colors">
+          <button onclick="editNote()" class="min-h-[44px] min-w-[56px] px-4 py-2.5 text-sm font-noto font-medium text-warm-600 hover:bg-warm-200 active:bg-warm-300 rounded-xl btn-press transition-colors">编辑</button>
+          <button id="modal-btn-export" class="min-h-[44px] min-w-[56px] px-4 py-2.5 text-sm font-noto font-medium text-warm-600 hover:bg-warm-200 active:bg-warm-300 rounded-xl btn-press transition-colors">导出</button>
+          <button onclick="closeModal('modal-detail')" class="w-10 h-10 flex items-center justify-center text-warm-400 hover:text-warm-600 hover:bg-warm-200 rounded-full transition-colors">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
             </svg>
@@ -535,7 +611,7 @@
             </svg>
             核心观点
           </h3>
-          <p id="modal-core-points" class="text-sm sm:text-base text-warm-700 leading-relaxed bg-honey-50/50 rounded-xl p-4 font-noto"></p>
+          <p id="modal-core-points" class="content-prose text-warm-700 bg-honey-50/50 rounded-xl p-4 sm:p-5 font-noto"></p>
         </div>
         <div>
           <h3 class="text-base font-fredoka font-semibold text-honey-500 mb-2 flex items-center gap-1.5">
@@ -544,7 +620,7 @@
             </svg>
             干货知识点
           </h3>
-          <p id="modal-knowledge" class="text-sm sm:text-base text-warm-700 leading-relaxed bg-green-50/50 rounded-xl p-4 font-noto"></p>
+          <p id="modal-knowledge" class="content-prose text-warm-700 bg-green-50/50 rounded-xl p-4 sm:p-5 font-noto"></p>
         </div>
         <div>
           <h3 class="text-base font-fredoka font-semibold text-honey-500 mb-2 flex items-center gap-1.5">
@@ -553,7 +629,7 @@
             </svg>
             个人感悟区
           </h3>
-          <p id="modal-reflection" class="text-sm sm:text-base text-warm-700 leading-relaxed bg-blue-50/50 rounded-xl p-4 font-noto"></p>
+          <p id="modal-reflection" class="content-prose text-warm-700 bg-blue-50/50 rounded-xl p-4 sm:p-5 font-noto"></p>
         </div>
         <!-- Quality & Tags -->
         <div class="flex flex-wrap items-center gap-4 pt-2 border-t border-warm-100">
@@ -586,7 +662,7 @@
         <div class="flex gap-2 pt-2">
           <input id="new-category-name" type="text" placeholder="新建分类名称…" class="flex-1 px-3 py-2 text-sm font-noto border border-warm-200 rounded-lg outline-none focus:border-honey-400 transition-colors">
           <input id="new-category-color" type="color" value="#e8a860" class="w-10 h-10 rounded-lg border border-warm-200 cursor-pointer p-0.5">
-          <button id="btn-add-category" class="px-4 py-2 bg-honey-400 hover:bg-honey-500 text-white text-sm font-noto font-medium rounded-lg transition-colors">添加</button>
+          <button id="btn-add-category" class="px-4 py-2 min-h-[44px] bg-honey-400 hover:bg-honey-500 text-white text-sm font-noto font-medium rounded-lg transition-colors btn-press">添加</button>
         </div>
       </div>
     </div>
@@ -634,14 +710,14 @@
         <div class="pt-2 border-t border-warm-100">
           <span class="text-sm font-fredoka font-medium text-warm-800 block mb-3">数据管理</span>
           <div class="flex gap-2">
-            <button id="btn-export-all-json" class="flex-1 px-4 py-2 text-sm font-noto text-warm-600 bg-warm-200 hover:bg-warm-300 rounded-lg transition-colors">导出全部 JSON</button>
-            <button id="btn-import-json" class="flex-1 px-4 py-2 text-sm font-noto text-warm-600 bg-warm-200 hover:bg-warm-300 rounded-lg transition-colors">导入 JSON 备份</button>
+            <button id="btn-export-all-json" class="flex-1 px-4 py-2 min-h-[44px] text-sm font-noto text-warm-600 bg-warm-200 hover:bg-warm-300 active:bg-warm-400 rounded-lg transition-colors btn-press">导出全部 JSON</button>
+            <button id="btn-import-json" class="flex-1 px-4 py-2 min-h-[44px] text-sm font-noto text-warm-600 bg-warm-200 hover:bg-warm-300 active:bg-warm-400 rounded-lg transition-colors btn-press">导入 JSON 备份</button>
             <input type="file" id="import-json-input" accept=".json" class="hidden">
           </div>
         </div>
         <!-- Danger zone -->
         <div class="pt-2 border-t border-red-100">
-          <button id="btn-clear-all" class="px-4 py-2 text-sm font-noto text-red-600 bg-red-50 hover:bg-red-100 rounded-lg transition-colors">
+          <button id="btn-clear-all" class="px-4 py-2 min-h-[44px] text-sm font-noto text-red-600 bg-red-50 hover:bg-red-100 active:bg-red-200 rounded-lg transition-colors btn-press">
             清除全部数据
           </button>
         </div>
@@ -650,24 +726,24 @@
   </div>
 
   <!-- ==================== BATCH ACTION BAR ==================== -->
-  <div id="batch-bar" class="fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-warm-200 shadow-lg transform translate-y-full transition-transform">
+  <div id="batch-bar" class="fixed left-0 right-0 z-40 bg-white border-t border-warm-200 shadow-lg transform translate-y-full transition-transform" style="bottom: 0; padding-bottom: var(--safe-bottom);">
     <div class="max-w-content mx-auto px-4 sm:px-8 py-3 flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-0 sm:justify-between">
       <div class="flex items-center gap-3">
-        <button id="btn-select-all" class="text-sm font-noto text-warm-600 hover:text-warm-800 font-medium">全选</button>
+        <button id="btn-select-all" class="min-h-[44px] px-2 text-sm font-noto text-warm-600 hover:text-warm-800 font-medium btn-press">全选</button>
         <span id="batch-count" class="text-xs sm:text-sm text-warm-400 font-noto">已选 0 条</span>
       </div>
       <div class="flex items-center gap-2 flex-wrap">
         <select id="batch-move-category" class="px-2 sm:px-3 py-2 text-xs sm:text-sm bg-warm-100 border border-warm-200 rounded-lg text-warm-600 outline-none">
           <option value="">移动到分类…</option>
         </select>
-        <button id="btn-batch-delete" class="px-3 sm:px-4 py-2 text-xs sm:text-sm font-noto text-red-600 bg-red-50 hover:bg-red-100 rounded-lg transition-colors">批量删除</button>
-        <button id="btn-cancel-batch" class="px-3 sm:px-4 py-2 text-xs sm:text-sm font-noto text-warm-600 bg-warm-200 hover:bg-warm-300 rounded-lg transition-colors">取消</button>
+        <button id="btn-batch-delete" class="px-3 sm:px-4 py-2 min-h-[44px] text-xs sm:text-sm font-noto text-red-600 bg-red-50 hover:bg-red-100 active:bg-red-200 rounded-lg transition-colors btn-press">批量删除</button>
+        <button id="btn-cancel-batch" class="px-3 sm:px-4 py-2 min-h-[44px] text-xs sm:text-sm font-noto text-warm-600 bg-warm-200 hover:bg-warm-300 active:bg-warm-400 rounded-lg transition-colors btn-press">取消</button>
       </div>
     </div>
   </div>
 
   <!-- ==================== TOAST CONTAINER ==================== -->
-  <div id="toast-container" class="fixed bottom-4 sm:bottom-6 left-4 sm:left-auto right-4 sm:right-6 z-50 flex flex-col items-center sm:items-end gap-2"></div>
+  <div id="toast-container" class="fixed left-4 sm:left-auto right-4 sm:right-6 z-50 flex flex-col items-center sm:items-end gap-2" style="bottom: calc(1rem + var(--safe-bottom));"></div>
 
   <!-- ==================== SCRIPTS ==================== -->
   <script src="js/store.js"></script>

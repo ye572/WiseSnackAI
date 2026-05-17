@@ -261,16 +261,16 @@ function sleep(ms) {
 
 async function aiProcessWithDelay(rawText, options = {}) {
   try {
-    window.dispatchEvent(new CustomEvent('ai-step', { detail: { step: '正在连接 AI 服务…', progress: 0.2 } }));
+    window.dispatchEvent(new CustomEvent('ai-step', { detail: { step: '正在连接 AI 服务…', progress: 0.1 } }));
     const result = await callBackendAPI(rawText, options);
-    window.dispatchEvent(new CustomEvent('ai-step', { detail: { step: '处理完成！', progress: 1 } }));
+    window.dispatchEvent(new CustomEvent('ai-step', { detail: { step: '内容已整理完成！', progress: 1 } }));
     return result;
   } catch (e) {
     console.warn('后端 AI 不可用，切换本地处理:', e.message);
     showToast('AI 服务未启动，使用本地处理', 'info');
   }
 
-  const steps = ['正在提取正文内容…', '正在过滤无营养信息…', '正在拆解三大笔记板块…', '正在评估内容质量…', '正在推荐分类标签…'];
+  const steps = ['正在提取正文内容…', '正在过滤广告和无效信息…', '正在拆解核心观点与干货…', '正在评估内容质量和价值…', '正在推荐分类标签…'];
   for (let i = 0; i < steps.length; i++) {
     await sleep(500);
     window.dispatchEvent(new CustomEvent('ai-step', { detail: { step: steps[i], progress: (i + 1) / steps.length } }));
